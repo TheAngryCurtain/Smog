@@ -45,6 +45,20 @@ public class PaintableMesh : MonoBehaviour
                 if (blobA >= a) m_VertColors[i].a = blobA;
             }
         }
+
         m_Mesh.colors32 = m_VertColors;
     }
+
+    //public void Paint(Vector2 textureCoord, Color color)
+    //{
+    //    Debug.LogFormat("Texture Coord: {0}", textureCoord);
+
+    //    Texture2D tex = (Texture2D)m_MeshRenderer.material.mainTexture;
+    //    Vector2 pixelUV = textureCoord;
+    //    pixelUV.x *= tex.width;
+    //    pixelUV.y *= tex.height;
+
+    //    tex.SetPixel((int)pixelUV.x, (int)pixelUV.y, color);
+    //    tex.Apply();
+    //}
 }

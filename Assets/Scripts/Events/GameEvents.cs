@@ -17,10 +17,12 @@ public class GameEvents
     public class PaintRequestAtPositionEvent : VSGameEvent
     {
         public Vector2 Position;
+        public Color Color;
 
-        public PaintRequestAtPositionEvent(Vector2 pos)
+        public PaintRequestAtPositionEvent(Vector2 pos, Color c)
         {
             Position = pos;
+            Color = c;
         }
     }
 }

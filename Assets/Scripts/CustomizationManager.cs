@@ -36,13 +36,13 @@ public class CustomizationManager : Singleton<CustomizationManager>
 
     private void OnPaintRequested(GameEvents.PaintRequestAtPositionEvent e)
     {
-        Debug.LogFormat("POS: {0}", e.Position);
+        //Debug.LogFormat("POS: {0}", e.Position);
         if (Physics.Raycast(Camera.main.ScreenPointToRay(e.Position), out m_Hit))
         {
             PaintableMesh pMesh = m_Hit.collider.GetComponent<PaintableMesh>();
             if (pMesh != null)
             {
-                pMesh.ApplyPaint(m_Hit.point, 0.1f, 0.2f, Color.red);
+                pMesh.ApplyPaint(m_Hit.point, 0.1f, 0.2f, e.Color);
             }
         }
     }
