@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using Rewired;
 
-public class Vehicle : MonoBehaviour
+public class VehicleController : MonoBehaviour
 {
     [SerializeField] protected float _maxTorque;
     [SerializeField] protected float _maxBrake;
@@ -11,6 +11,7 @@ public class Vehicle : MonoBehaviour
     [SerializeField] protected Rigidbody _rigidbody;
     [SerializeField] protected Transform[] _seats;
     [SerializeField] protected Transform _centerOfMass;
+    [SerializeField] protected ParticleSystem _exhaustParticle;
 
     [SerializeField] protected float _driftWheelFriction;
 
@@ -46,16 +47,29 @@ public class Vehicle : MonoBehaviour
         public bool Steer;
     }
 
-    protected virtual void Awake()
+    private void OnGameStateChanged(GameEvents.GameStateChangedEvent e)
     {
-        InputManager.Instance.AddInputEventDelegate(OnInputUpdate, Rewired.UpdateLoopType.Update);
+        if (e.State == eGameState.InGame)
+        {
+            // grab control
+            InputManager.Instance.AddInputEventDelegate(OnInputUpdate, Rewired.UpdateLoopType.Update);
+
+            _exhaustParticle.Play();
+        }
+        else
+        {
+            // release control
+            InputManager.Instance.RemoveInputEventDelegate(OnInputUpdate);
+
+            _exhaustParticle.Stop();
+        }
     }
 
     protected virtual void OnInputUpdate(InputActionEventData data)
     {
         switch (data.actionId)
         {
-            case RewiredConsts.Action.Steer:
+            case RewiredConsts.Action.Steer_Horizontal:
                 _steerValue = data.GetAxis();
                 break;
 
@@ -82,6 +96,8 @@ public class Vehicle : MonoBehaviour
 
     protected virtual void Start()
     {
+        VSEventManager.Instance.AddListener<GameEvents.GameStateChangedEvent>(OnGameStateChanged);
+
         _rigidbody.centerOfMass = _centerOfMass.localPosition;
         _defaultWheelFriction = _axles[0].LeftWheelCollider.sidewaysFriction.stiffness;
     }
